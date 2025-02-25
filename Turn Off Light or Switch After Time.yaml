@@ -1,0 +1,31 @@
+blueprint:
+  name: Turn off Lights and/or Switches after Time has elapsed
+  description: Given a set of lights and/or switches entities, watch for it turning on, and then turn it off
+    after a certain period of time.
+  domain: automation
+  input:
+    lights_switches:
+      name: Lights and Switches
+      description: Select the lights and/or switches to monitor and control
+      selector:
+        entity:
+          domain:
+          - light
+          - switch
+          multiple: true
+    duration:
+      name: Duration
+      description: The duration to leave the lights and/or switches on for
+      selector:
+        duration: {}
+trigger:
+- platform: state
+  entity_id: !input lights_switches
+  to: 'on'
+  for: !input duration
+condition: []
+action:
+- service: homeassistant.turn_off
+  data: {}
+  entity_id: !input lights_switches
+mode: single
