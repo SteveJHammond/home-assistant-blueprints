@@ -18,7 +18,7 @@ blueprint:
       description: The duration to leave the lights and/or switches on for
       selector:
         duration: {}
-  source_URL: https://github.com/stevehammond68/home-assistant-blueprints/edit/main/Turn%20Off%20Light%20or%20Switch%20After%20Time.yaml#L20C20
+  source_URL: https://github.com/stevehammond68/home-assistant-blueprints/blob/main/Turn%20Off%20Light%20or%20Switch%20After%20Time.yaml
 trigger:
 - platform: state
   entity_id: !input lights_switches
