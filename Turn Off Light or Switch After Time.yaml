@@ -1,6 +1,6 @@
 blueprint:
   name: Turn off Lights and/or Switches after Time has elapsed
-  source_url: https://raw.githubusercontent.com/SteveJHammond/home-assistant-blueprints/main/Turn%20Off%20Light%20or%20Switch%20After%20Time.yaml
+  source_url: https://gist.githubusercontent.com/SteveJHammond/b578f64dd269ced87718f46d5801ac96/raw/d7deb5802fae68ca362c252aead6d5f883041b94/Turn%2520Off%2520Light%2520or%2520Switch%2520After%2520Time.yaml
   description: Given a set of lights and/or switches entities, watch for it turning on, and then turn it off
     after a certain period of time.
   domain: automation
