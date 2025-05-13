@@ -1,0 +1,81 @@
+blueprint:
+  name: Turn Off Lights/Switches After Inactivity (Grouped Timeout)
+  description: >
+    Turns off all selected lights and switches together after a period of inactivity.
+    Any new activation of a light or motion sensor resets the timer.
+  domain: automation
+  input:
+    lights_switches:
+      name: Lights and Switches
+      description: Entities to turn off after inactivity
+      selector:
+        entity:
+          domain:
+            - light
+            - switch
+          multiple: true
+
+    motion_sensors:
+      name: Motion Sensors (optional)
+      description: Optional motion sensors to keep lights on while motion is detected
+      default: []
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: motion
+          multiple: true
+
+    duration:
+      name: Timeout Duration
+      description: How long to wait after last activity before turning off
+      selector:
+        duration: {}
+
+    transition:
+      name: Transition (optional)
+      description: Seconds to fade lights out (only works for lights that support it)
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 60
+          unit_of_measurement: seconds
+          mode: slider
+
+trigger:
+  - platform: state
+    entity_id: !input lights_switches
+    to: 'on'
+  - platform: state
+    entity_id: !input motion_sensors
+    to: 'on'
+
+condition: []
+
+variables:
+  duration: !input duration
+  transition: !input transition
+  lights_switches: !input lights_switches
+
+action:
+  - wait_for_trigger:
+      - platform: state
+        entity_id: !input lights_switches
+        to: 'on'
+      - platform: state
+        entity_id: !input motion_sensors
+        to: 'on'
+    timeout: "{{ duration }}"
+    continue_on_timeout: true
+
+  - if:
+      - condition: template
+        value_template: "{{ wait.trigger is none }}"
+    then:
+      - service: homeassistant.turn_off
+        data:
+          transition: "{{ transition | int }}"
+        target:
+          entity_id: !input lights_switches
+
+mode: restart
