@@ -55,12 +55,15 @@ trigger:
   - platform: state
     entity_id: !input motion_sensors
     to: 'on'
-    condition:
-      condition: state
-      entity_id: !input cooldown_helper
-      state: 'off'
 
-condition: []
+condition:
+  - condition: or
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.entity_id in lights_switches }}"
+      - condition: state
+        entity_id: !input cooldown_helper
+        state: 'off'
 
 variables:
   duration: !input duration
