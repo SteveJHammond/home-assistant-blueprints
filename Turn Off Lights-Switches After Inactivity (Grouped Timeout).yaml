@@ -72,10 +72,51 @@ action:
       - condition: template
         value_template: "{{ wait.trigger is none }}"
     then:
-      - service: homeassistant.turn_off
-        data:
-          transition: "{{ transition | int }}"
-        target:
-          entity_id: !input lights_switches
+      - variables:
+          lights_only: >
+            {{ lights_switches | select('is_state', 'on') | select('match', 'light\\..*') | list }}
+          switches_only: >
+            {{ lights_switches | select('is_state', 'on') | select('match', 'switch\\..*') | list }}
+      
+      - if: "{{ lights_only | count > 0 }}"
+        then:
+          - service: light.turn_off
+            data:
+              transition: "{{ transition | int }}"
+            target:
+              entity_id: "{{ lights_only }}"
+      
+      - if: "{{ switches_only | count > 0 }}"
+        then:
+          - service: switch.turn_off
+            target:
+              entity_id: "{{ switches_only }}"
 
 mode: restart
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
