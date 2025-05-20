@@ -5,6 +5,12 @@ blueprint:
     Any new activation of a light or motion sensor resets the timer.
   domain: automation
   input:
+    cooldown_helper:
+      name: Cooldown Helper (input_boolean)
+      description: Input boolean used to block motion re-triggers just after shutoff.
+      selector:
+        entity:
+          domain: input_boolean
     lights_switches:
       name: Lights and Switches
       description: Entities to turn off after inactivity
@@ -49,6 +55,10 @@ trigger:
   - platform: state
     entity_id: !input motion_sensors
     to: 'on'
+    condition:
+      condition: state
+      entity_id: !input cooldown_helper
+      state: 'off'
 
 condition: []
 
